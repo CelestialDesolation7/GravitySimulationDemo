@@ -1,0 +1,8 @@
+# Visual Studio 编译文件忽略规则
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.log
