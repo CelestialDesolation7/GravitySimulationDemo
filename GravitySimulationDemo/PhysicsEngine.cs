@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 
 namespace GravitySimulationDemo
 {
-    public class Simulator
+    public class PhysicsEngine
     {
         public List<Body> Bodies { get; private set; } = new List<Body>();
 
         public const double G = 6.67430e-11f; // 万有引力常数
 
-        public Simulator() { }
+        public PhysicsEngine() { }
 
         public void AddBody(Body body)
         {

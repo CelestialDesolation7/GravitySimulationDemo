@@ -7,9 +7,9 @@ namespace GravitySimulationDemo
 {
     public partial class Form1 : Form
     {
-        private Simulator simulator;
+        private PhysicsEngine physicsEngine;
         private Renderer renderer;
-        public double timeStep = 10800; // 单位：秒，每帧约3小时物理时间
+        public double timeStep = 43200; // 单位：秒，每帧约12小时物理时间
         public double scale = 23376e2; // 比例尺，每一个像素代表的物理距离
         public bool RenderTrajectory = false;
         public Vector2D canvasCenter;
@@ -18,7 +18,7 @@ namespace GravitySimulationDemo
         {
             InitializeComponent();
             DoubleBuffered = true;
-            simulator = new Simulator();
+            physicsEngine = new PhysicsEngine();
             renderer = new Renderer();
             InitBodies();
 
@@ -70,21 +70,21 @@ namespace GravitySimulationDemo
                 isCenter_in: false,
                 color_in: Color.Gray
             );
-            simulator.AddBody(centerBody);
-            simulator.AddBody(moon);
+            physicsEngine.AddBody(centerBody);
+            physicsEngine.AddBody(moon);
 
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            simulator.Update(timeStep);
+            physicsEngine.Update(timeStep);
             UpdateDisplayPositions();
             panelCanvas.Invalidate();
         }
 
         private void PanelCanvas_Click(object sender, EventArgs e)
         {
-            simulator.Update(timeStep); // 每次点击手动更新一次物理状态
+            physicsEngine.Update(timeStep); // 每次点击手动更新一次物理状态
             UpdateDisplayPositions(); // 更新画布坐标
             panelCanvas.Invalidate(); // 请求重绘画布
         }
@@ -95,7 +95,7 @@ namespace GravitySimulationDemo
             canvasCenter = new Vector2D(panelCanvas.Width / 2, panelCanvas.Height / 2);
             debugTextBox.Clear();
 
-            foreach (var body in simulator.Bodies)
+            foreach (var body in physicsEngine.Bodies)
             {
                 if (body.IsCenter) { body.DisplayPosition = canvasCenter; continue; }
                 // 此处直接以中心天体为原点，将物理位置转换为画布位置
@@ -104,12 +104,12 @@ namespace GravitySimulationDemo
                 // 调试代码。
                 debugTextBox.Clear();
                 debugTextBox.AppendText($"名称:{body.name}\r\n");
-                debugTextBox.AppendText($"物理位置: {body.Position.X},{body.Position.Y}\r\n");
-                debugTextBox.AppendText($"缩放后位置:{scaledPhysicalPosition.X},{scaledPhysicalPosition.Y}\r\n");
-                debugTextBox.AppendText($"画布位置: {body.DisplayPosition.X},{body.DisplayPosition.Y}\r\n");
-                debugTextBox.AppendText($"速度: {body.Velocity.X},{body.Velocity.Y}\r\n");
-                debugTextBox.AppendText($"加速度: {body.Acceleration.X},{body.Acceleration.Y}\r\n");
-                debugTextBox.AppendText($"力: {body.Force.X},{body.Force.Y}\r\n");
+                debugTextBox.AppendText($"物理位置: \r\nX轴向:{body.Position.X}\r\nY轴向:{body.Position.Y}\r\n");
+                debugTextBox.AppendText($"缩放后位置: \r\nX轴向:{scaledPhysicalPosition.X}\r\nY轴向:{scaledPhysicalPosition.Y}\r\n");
+                debugTextBox.AppendText($"画布位置: \r\nX轴向:{body.DisplayPosition.X}\r\nY轴向:{body.DisplayPosition.Y}\r\n");
+                debugTextBox.AppendText($"速度: \r\nX轴向:{body.Velocity.X}\r\nY轴向:{body.Velocity.Y}\r\n");
+                debugTextBox.AppendText($"加速度: \r\nX轴向:{body.Acceleration.X}\r\nY轴向:{body.Acceleration.Y}\r\n");
+                debugTextBox.AppendText($"力: \r\nX轴向:{body.Force.X}\r\nY轴向:{body.Force.Y}\r\n");
 
 
             }
@@ -124,10 +124,10 @@ namespace GravitySimulationDemo
             // e.Graphics：用于绘制画布的Graphics对象
             // e.ClipRectangle：当前需要绘制的矩形区域
             // 在绘图区域中，坐标系原点在左上角，x轴向右，y轴向下
-            renderer.RenderBodies(simulator.Bodies, e.Graphics);
+            renderer.RenderBodies(physicsEngine.Bodies, e.Graphics);
             if (RenderTrajectory)
             {
-                renderer.RenderTrajectory(simulator.Bodies, e.Graphics);
+                renderer.RenderTrajectory(physicsEngine.Bodies, e.Graphics);
             }
         }
     }
