@@ -9,10 +9,10 @@ namespace GravitySimulationDemo
     {
         private PhysicsEngine physicsEngine;
         private Renderer renderer;
-        public double timeStep = 43200; // 单位：秒，每帧约12小时物理时间
-        public double scale = 23376e2; // 比例尺，每一个像素代表的物理距离
+        public double TimeStep = 43200; // 单位：秒，每帧约12小时物理时间
+        public double PixelToDistanceRatio = 23376e2; // 比例尺，每一个像素代表的物理距离
         public bool RenderTrajectory = false;
-        public Vector2D canvasCenter;
+        public Vector2D CanvasCenter;
 
         public Form1()
         {
@@ -77,14 +77,14 @@ namespace GravitySimulationDemo
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            physicsEngine.Update(timeStep);
+            physicsEngine.Update(TimeStep);
             UpdateDisplayPositions();
             panelCanvas.Invalidate();
         }
 
         private void PanelCanvas_Click(object sender, EventArgs e)
         {
-            physicsEngine.Update(timeStep); // 每次点击手动更新一次物理状态
+            physicsEngine.Update(TimeStep); // 每次点击手动更新一次物理状态
             UpdateDisplayPositions(); // 更新画布坐标
             panelCanvas.Invalidate(); // 请求重绘画布
         }
@@ -92,25 +92,24 @@ namespace GravitySimulationDemo
 
         private void UpdateDisplayPositions()
         {
-            canvasCenter = new Vector2D(panelCanvas.Width / 2, panelCanvas.Height / 2);
+            CanvasCenter = new Vector2D(panelCanvas.Width / 2, panelCanvas.Height / 2);
             debugTextBox.Clear();
 
             foreach (var body in physicsEngine.Bodies)
             {
-                if (body.IsCenter) { body.DisplayPosition = canvasCenter; continue; }
+                if (body.IsCenter) { body.DisplayPosition = CanvasCenter; continue; }
                 // 此处直接以中心天体为原点，将物理位置转换为画布位置
-                var scaledPhysicalPosition = body.Position / scale;
-                body.DisplayPosition = (body.Position / scale) + canvasCenter;
+                var scaledPhysicalPosition = body.Position / PixelToDistanceRatio;
+                body.DisplayPosition = (body.Position / PixelToDistanceRatio) + CanvasCenter;
                 // 调试代码。
                 debugTextBox.Clear();
-                debugTextBox.AppendText($"名称:{body.name}\r\n");
+                debugTextBox.AppendText($"名称:{body.Name}\r\n");
                 debugTextBox.AppendText($"物理位置: \r\nX轴向:{body.Position.X}\r\nY轴向:{body.Position.Y}\r\n");
                 debugTextBox.AppendText($"缩放后位置: \r\nX轴向:{scaledPhysicalPosition.X}\r\nY轴向:{scaledPhysicalPosition.Y}\r\n");
                 debugTextBox.AppendText($"画布位置: \r\nX轴向:{body.DisplayPosition.X}\r\nY轴向:{body.DisplayPosition.Y}\r\n");
                 debugTextBox.AppendText($"速度: \r\nX轴向:{body.Velocity.X}\r\nY轴向:{body.Velocity.Y}\r\n");
                 debugTextBox.AppendText($"加速度: \r\nX轴向:{body.Acceleration.X}\r\nY轴向:{body.Acceleration.Y}\r\n");
                 debugTextBox.AppendText($"力: \r\nX轴向:{body.Force.X}\r\nY轴向:{body.Force.Y}\r\n");
-
 
             }
         }

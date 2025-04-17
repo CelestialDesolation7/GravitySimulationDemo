@@ -5,7 +5,7 @@ namespace GravitySimulationDemo
 {
     public class Body
     {
-        public string name { get; set; }
+        public string Name { get; set; }
         // 物理属性 
         // 仅在初始化时对用户可见，之后不再修改
         public Vector2D Position { get; set; }           // 物理真实位置
@@ -25,7 +25,7 @@ namespace GravitySimulationDemo
 
         public Body(string name_in, Vector2D position_in, Vector2D velocity_in, double mass_in, int displayRadius_in, bool isCenter_in, Color color_in)
         {
-            name = name_in;
+            Name = name_in;
             Position = position_in;
             Velocity = velocity_in;
             Mass = mass_in;
@@ -33,8 +33,8 @@ namespace GravitySimulationDemo
             DisplayColor = color_in;
             RenderRadius = displayRadius_in;
 
-            Force = Vector2D.zero; // 初始化力为零
-            Acceleration = Vector2D.zero; // 初始化加速度为零
+            Force = Vector2D.ZeroVector; // 初始化力为零
+            Acceleration = Vector2D.ZeroVector; // 初始化加速度为零
         }
     }
 
@@ -50,7 +50,7 @@ namespace GravitySimulationDemo
             set
             {
                 x = value;
-                UpdateLength();
+                length = Math.Sqrt(x * x + y * y);
             }
         }
 
@@ -60,7 +60,7 @@ namespace GravitySimulationDemo
             set
             {
                 y = value;
-                UpdateLength();
+                length = Math.Sqrt(x * x + y * y);
             }
         }
 
@@ -70,11 +70,6 @@ namespace GravitySimulationDemo
         {
             this.x = x;
             this.y = y;
-            this.length = Math.Sqrt(x * x + y * y);
-        }
-
-        private void UpdateLength()
-        {
             length = Math.Sqrt(x * x + y * y);
         }
 
@@ -86,9 +81,9 @@ namespace GravitySimulationDemo
         public static Vector2D operator /(Vector2D a, double k) => new Vector2D(a.X / k, a.Y / k);
         public static Vector2D operator -(Vector2D a) => new Vector2D(-a.X, -a.Y);
 
-        public static Vector2D zero => new Vector2D(0, 0);
+        public static Vector2D ZeroVector => new Vector2D(0, 0);
 
-        public Vector2D Normalize() => length == 0 ? zero : this * (1.0 / length);
+        public Vector2D Normalize() => length == 0 ? ZeroVector : this * (1.0 / length);
     }
 
 }

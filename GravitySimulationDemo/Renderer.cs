@@ -9,10 +9,7 @@ namespace GravitySimulationDemo
 {
     public class Renderer
     {
-        public Renderer()
-        {
-            // 初始化
-        }
+        public Renderer() { }
         public void RenderBodies(List<Body> bodies, Graphics graphics)
         {
             foreach (var body in bodies)

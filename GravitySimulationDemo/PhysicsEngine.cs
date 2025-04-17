@@ -23,7 +23,7 @@ namespace GravitySimulationDemo
             {
                 if (body.IsCenter) continue;  // 跳过中心天体，继续处理其他天体
                 // 一个天体受到的力是所有其他天体对它的引力之和
-                body.Force = Vector2D.zero;
+                body.Force = Vector2D.ZeroVector;
                 foreach (var other in Bodies)
                 {
                     if (other == body) continue;
